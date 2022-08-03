@@ -147,14 +147,14 @@ async def load_system_proxies(config):
     qs = {
         "os": platform.system().lower(),
         "arch": platform.machine(),
-        "os_ver": platform.win32_ver()[0] or platform.mac_ver()[0] or platform.release()[:1],
+        "os_ver": platform.win32_ver()[0] or platform.mac_ver()[0] or platform.release(),
         "cpu": str(CPU_COUNT),
         "copy": str(config['copies']),
         "thread": str(config['threads']),
         "dock": '1' if IS_DOCKER else '0',
         "auto": '1' if IS_AUTO_MH else '0',
-        "itarmy": '1' if config['it_army'] else '0',
         "uid": uuid.getnode(),
+        **config.get('stats', {}),
     }
     urls = [str(URL(u).with_query(qs)) for u in config['proxies_urls']]
     raw = await fetch(urls)

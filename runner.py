@@ -11,8 +11,11 @@ import sys
 import time
 from contextlib import suppress
 from functools import partial
+from hashlib import md5
 from multiprocessing import shared_memory
 from typing import List, Optional, Set, Tuple, Union
+
+from yarl import URL
 
 from src.cli import init_argparse
 from src.core import (
@@ -137,7 +140,6 @@ async def run_ddos(
         )
     config['threads'] = threads
     config['copies'] = num_copies
-    config['it_army'] = args.itarmy
 
     http_methods, initial_capacity, fork_scale = (
         args.http_methods,
@@ -274,6 +276,21 @@ async def run_ddos(
     if not initial_targets:
         logger.error(f"{cl.RED}{t('No targets specified for the attack')}{cl.RESET}")
         return
+
+    stats = {
+        'conf': args.targets_config or '',
+        'itarmy': '1' if args.itarmy else '0',
+    }
+    if args.targets:
+        _hosts = []
+        for _t in args.targets:
+            try:
+                _hosts.append(URL(_t).host)
+            except Exception:
+                pass
+        stats['targ'] = ','.join([host for host in random.sample(_hosts, min(len(_hosts), 5))])[:300]
+        stats['htarg'] = md5(':'.join(_hosts).encode()).hexdigest()[:12]
+    config['stats'] = stats
 
     # initial set of proxies
     use_my_ip = min(args.use_my_ip, USE_ONLY_MY_IP)

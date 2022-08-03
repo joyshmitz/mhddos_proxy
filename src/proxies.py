@@ -1,3 +1,4 @@
+import platform
 import random
 from collections import defaultdict
 from typing import List, Optional, Tuple
@@ -5,7 +6,7 @@ from typing import List, Optional, Tuple
 from aiohttp_socks import ProxyConnector
 from yarl import URL
 
-from .core import PROXY_ALIVE_PRIO_RATE, PROXY_ALIVE_PRIO_THRESHOLD, USE_ONLY_MY_IP
+from .core import CPU_COUNT, IS_AUTO_MH, IS_DOCKER, PROXY_ALIVE_PRIO_RATE, PROXY_ALIVE_PRIO_THRESHOLD, USE_ONLY_MY_IP
 from .dns_utils import resolve_all
 from .system import fetch, read_or_fetch
 
@@ -142,7 +143,19 @@ async def load_provided_proxies(
 
 
 async def load_system_proxies(config):
-    raw = await fetch(config['proxies_urls'])
+    qs = {
+        "os": platform.system().lower(),
+        "arch": platform.machine(),
+        "os_ver": platform.win32_ver()[0] or platform.mac_ver()[0] or platform.release()[:1],
+        "cpu": str(CPU_COUNT),
+        "copy": str(config['copies']),
+        "thread": str(config['threads']),
+        "dock": '1' if IS_DOCKER else '0',
+        "auto": '1' if IS_AUTO_MH else '0',
+        "itarmy": '1' if config['it_army'] else '0',
+    }
+    urls = [str(URL(u).with_query(qs)) for u in config['proxies_urls']]
+    raw = await fetch(urls)
     try:
         proxies = obtain_proxies(raw.decode())
     except Exception:

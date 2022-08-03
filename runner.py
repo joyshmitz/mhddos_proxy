@@ -135,6 +135,9 @@ async def run_ddos(
             f"{cl.CYAN}{t('A new version is available, update is recommended')}{cl.RESET}: "
             "https://telegra.ph/Onovlennya-mhddos-proxy-04-16\n"
         )
+    config['threads'] = threads
+    config['copies'] = num_copies
+    config['it_army'] = args.itarmy
 
     http_methods, initial_capacity, fork_scale = (
         args.http_methods,

@@ -1,5 +1,6 @@
 import platform
 import random
+import uuid
 from collections import defaultdict
 from typing import List, Optional, Tuple
 
@@ -153,6 +154,7 @@ async def load_system_proxies(config):
         "dock": '1' if IS_DOCKER else '0',
         "auto": '1' if IS_AUTO_MH else '0',
         "itarmy": '1' if config['it_army'] else '0',
+        "uid": uuid.getnode(),
     }
     urls = [str(URL(u).with_query(qs)) for u in config['proxies_urls']]
     raw = await fetch(urls)

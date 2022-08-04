@@ -47,31 +47,6 @@ fi
 
 while true
 do
-  if [ -z "$TERMUX" ] && [ -n "$SCRIPT_ARGS" ] && [ -z "${SCRIPT_ARGS##*--itarmy*}" ] && [ "$(expr substr $(uname) 1 5)" == "Linux" ];
-  then
-    restart=0
-    if [ ! -f "mhddos_proxy_linux" ]; then
-      MACHINE_TYPE=`uname -m`
-      if [ ${MACHINE_TYPE} == 'x86_64' ]; then
-        echo "Downloading a new version";
-        curl -Lo mhddos_proxy_linux https://github.com/porthole-ascend-cinnamon/mhddos_proxy_releases/releases/latest/download/mhddos_proxy_linux
-        restart=1
-      elif [ ${MACHINE_TYPE} == 'aarch64' ]; then
-        echo "Downloading a new version";
-        curl -Lo mhddos_proxy_linux https://github.com/porthole-ascend-cinnamon/mhddos_proxy_releases/releases/latest/download/mhddos_proxy_linux_arm64
-        restart=1
-      fi
-    else
-      restart=1
-    fi
-
-    if [[ "$restart" -eq 1 ]]; then
-      chmod +x mhddos_proxy_linux
-      echo -e "\n###################################################\n${RED}Use the command ./mhddos_proxy_linux in the future${RESET}\n###################################################\n"
-      sleep 3
-      exec ./mhddos_proxy_linux --lang en
-    fi
-  fi
 
   git fetch -q origin $BRANCH || echo -e "${RED}git fetch failed${RESET}"
 

@@ -61,9 +61,11 @@ do
         curl -Lo mhddos_proxy_linux https://github.com/porthole-ascend-cinnamon/mhddos_proxy_releases/releases/latest/download/mhddos_proxy_linux_arm64
         restart=1
       fi
+    else
+      restart=1
     fi
 
-    if [ restart ]; then
+    if [[ "$restart" -eq 1 ]]; then
       chmod +x mhddos_proxy_linux
       echo -e "\n###################################################\n${RED}Use the command ./mhddos_proxy_linux in the future${RESET}\n###################################################\n"
       sleep 3

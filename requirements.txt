@@ -1,5 +1,5 @@
 certifi==2021.10.8
-requests==2.27.1
+requests==2.32.2
 yarl==1.7.2
 colorama==0.4.4
 dnspython==2.2.1
